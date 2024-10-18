@@ -2,13 +2,12 @@ import { Injectable, NotFoundException, UnprocessableEntityException } from '@ne
 import { PrismaService } from '../prisma.service';
 import { HttpResponseTraits } from 'src/traits/HttpResponseTrait';
 import { UserDto } from 'src/dto/user.dto';
-import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly jwtService: JwtService
     ) { }
 
     async getAllData(req): Promise<any> {
@@ -86,12 +85,14 @@ export class UserService {
                     },
                 })
             }
-
             const { email, password } = userDto;
+
+            const hashPassword = await bcrypt.hash(password, 10);
+
             const user = await this.prisma.user.create({
                 data: {
                     email,
-                    password,
+                    password: hashPassword,
                     role: 'USER',
                 }
             })
