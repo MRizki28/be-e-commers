@@ -24,7 +24,17 @@ model User {
   email        String   @unique @db.VarChar(255)
   password     String   @db.VarChar(255)
   role         Role     @default(USER)
-  token_access String? 
+  token_access String?
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
+  profile      Profile? @relation("UserProfile")
+}
+
+model Profile {
+  id           String @id @default(uuid())
+  id_user      String @unique
+  user         User   @relation("UserProfile", fields: [id_user], references: [id])
+  name         String @db.VarChar(255)
+  address      String
+  phone_number String @db.VarChar(255)
 }
