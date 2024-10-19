@@ -33,6 +33,9 @@ export class UserService {
                     }
                 ]
             },
+            include: {
+                profile: true
+            },
             skip,
             take: Number(limit)
         });
@@ -72,32 +75,47 @@ export class UserService {
 
     async createData(userDto: UserDto): Promise<any> {
         try {
-            const existingUser = await this.prisma.user.findUnique({
-                where: { email: userDto.email }
-            });
+            return this.prisma.$transaction(async (prisma) => {
+                const existingUser = await this.prisma.user.findUnique({
+                    where: { email: userDto.email }
+                });
 
-            if (existingUser) {
-                throw new UnprocessableEntityException({
-                    status: 'not validate',
-                    message: {
-                        field: 'email',
-                        error: 'Email already exists',
-                    },
-                })
-            }
-            const { email, password } = userDto;
-
-            const hashPassword = await bcrypt.hash(password, 10);
-
-            const user = await this.prisma.user.create({
-                data: {
-                    email,
-                    password: hashPassword,
-                    role: 'USER',
+                if (existingUser) {
+                    throw new UnprocessableEntityException({
+                        status: 'not validate',
+                        message: {
+                            field: 'email',
+                            error: 'Email already exists',
+                        },
+                    })
                 }
+                const { email, password, name, address, phone_number } = userDto;
+
+                const hashPassword = await bcrypt.hash(password, 10);
+
+                const user = await this.prisma.user.create({
+                    data: {
+                        email,
+                        password: hashPassword,
+                        role: 'USER',
+                    }
+                })
+
+                const profile = await this.prisma.profile.create({
+                    data: {
+                        id_user: user.id,
+                        name,
+                        address,
+                        phone_number,
+                    }
+                })
+
+                return HttpResponseTraits.success({
+                    user,
+                    profile
+                });
             })
 
-            return HttpResponseTraits.success(user, 'success', 201);
         } catch (error) {
             console.log(error);
             if (error instanceof UnprocessableEntityException) {
@@ -120,11 +138,11 @@ export class UserService {
             return HttpResponseTraits.success(user);
         } catch (error) {
             console.log(error);
-            if(error instanceof NotFoundException) {
+            if (error instanceof NotFoundException) {
                 throw error;
             }
         };
-        
+
     }
 
     async updateData(id: string, userDto: UserDto): Promise<any> {
@@ -137,13 +155,12 @@ export class UserService {
                 HttpResponseTraits.dataNotFound();
             }
 
-
-            const { email, password } = userDto;
+            const { email, password, name, address, phone_number } = userDto;
 
             const userWithEmail = await this.prisma.user.findUnique({
                 where: { email }
             });
-    
+
             if (userWithEmail && userWithEmail.id !== id) {
                 HttpResponseTraits.errorMessage({
                     field: "email",
@@ -159,12 +176,24 @@ export class UserService {
                 }
             });
 
-            return HttpResponseTraits.success(user, 'success', 200);
+            const profile = await this.prisma.profile.update({
+                where: { id_user: id },
+                data: {
+                    name,
+                    address,
+                    phone_number,
+                }
+            })
+        
+            return HttpResponseTraits.success({
+                user,
+                profile
+            });
         } catch (error) {
             console.log(error);
-            if(error instanceof NotFoundException) {
+            if (error instanceof NotFoundException) {
                 throw error;
-            }else if(error instanceof UnprocessableEntityException) {
+            } else if (error instanceof UnprocessableEntityException) {
                 throw error;
             }
         };
@@ -179,6 +208,10 @@ export class UserService {
             if (!existingUser) {
                 HttpResponseTraits.dataNotFound();
             }
+            
+            await this.prisma.profile.delete({
+                where: { id_user: id }
+            })
 
             await this.prisma.user.delete({
                 where: { id: id }
@@ -191,6 +224,6 @@ export class UserService {
                 throw error;
             }
         };
-        
+
     }
 }
