@@ -9,7 +9,7 @@ export class UserController {
         private readonly userService: UserService,
     ) {}
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('/')
     async getAllData(@Query() req) {
         return await this.userService.getAllData(req);
