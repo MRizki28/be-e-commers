@@ -31,10 +31,23 @@ model User {
 }
 
 model Profile {
-  id           String @id @default(uuid())
-  id_user      String @unique
-  user         User   @relation("UserProfile", fields: [id_user], references: [id])
-  name         String @db.VarChar(255)
+  id           String   @id @default(uuid())
+  id_user      String   @unique
+  user         User     @relation("UserProfile", fields: [id_user], references: [id])
+  name         String   @db.VarChar(255)
   address      String
-  phone_number String @db.VarChar(255)
+  phone_number String   @db.VarChar(255)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  name_product String   @db.VarChar(255)
+  stock        Int
+  price        Int
+  product_img  String   @db.VarChar(255)
+  description String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 }
