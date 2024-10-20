@@ -10,7 +10,7 @@ RUN npm install -g prisma
 
 COPY . .
 
-RUN npx prisma generate --binary-targets native,linux-musl-openssl-3.0.x
+RUN npx prisma generate
 
 EXPOSE 3333
 
