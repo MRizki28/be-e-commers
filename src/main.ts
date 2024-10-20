@@ -4,6 +4,7 @@ import { UnprocessableEntityException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import * as bodyParser from 'body-parser';
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -20,6 +21,6 @@ async function bootstrap() {
   ));
 
   app.use(bodyParser.json());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
