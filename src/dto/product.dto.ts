@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { IsNotEmpty, Validate } from "class-validator";
+import { IsDecimal, IsNotEmpty, IsNumberString, Validate } from "class-validator";
 import { FileUpload } from "src/config/validator/FIleUpload";
 
 @Injectable()
@@ -9,6 +9,7 @@ export class ProductDto {
     @IsNotEmpty()
     stock: number;
     @IsNotEmpty()
+    @IsDecimal({decimal_digits: '2'})
     price: number;
     @IsNotEmpty()
     description: string;
