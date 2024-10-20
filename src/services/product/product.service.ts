@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { HttpResponseTraits } from 'src/traits/HttpResponseTrait';
+import { ProductDto } from 'src/dto/product.dto';
+import { v4 as uuidv4 } from 'uuid';
+import { createWriteStream } from 'fs';
 
 @Injectable()
 export class ProductService {
@@ -98,6 +101,54 @@ export class ProductService {
             totalData: totalData,
             nextPage: page < totalPage ? page + 1 : null,
             prevPage: page > 1 ? page - 1 : null,
+        };
+    }
+
+    async createData(productDto: ProductDto, productImg: Express.Multer.File): Promise<any> {
+        try {
+            const { name_product, stock, price, description } = productDto;
+
+            if (!productImg || !['image/jpeg', 'image/png'].includes(productImg.mimetype)) {
+                throw new UnprocessableEntityException({
+                    status: 'not validate',
+                    message: [
+                        {
+                            field: 'product_img',
+                            error: 'Product_img is required and must be a JPEG or PNG image',
+                        },
+                    ],
+                });
+            }
+
+            const filename = `${uuidv4()}-${productImg.originalname}`;
+            const path = `./public/uploads/product/${filename}`;
+            const writeStream = createWriteStream(path);
+
+            const fileUploadPromise = new Promise((resolve, reject) => {
+                writeStream.on('finish', () => resolve(true));
+                writeStream.on('error', (err) => reject(err));
+                writeStream.write(productImg.buffer);
+                writeStream.end();
+            })
+
+            await fileUploadPromise;
+
+            const data = await this.prisma.product.create({
+                data: {
+                    name_product,
+                    stock: Number(stock),
+                    price: Number(price),
+                    description,
+                    product_img: filename
+                }
+            });
+
+            return HttpResponseTraits.success(data, 'Success create product');
+        } catch (error) {
+            console.log(error);
+            if (error instanceof UnprocessableEntityException) {
+                throw error;
+            }
         };
     }
 }
