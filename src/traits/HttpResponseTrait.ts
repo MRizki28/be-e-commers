@@ -1,7 +1,6 @@
 import { NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 
 interface HttpResponse {
-    code: number;
     message: string;
     data?: any;
     errors?: any;
@@ -9,27 +8,24 @@ interface HttpResponse {
 }
 
 export class HttpResponseTraits {
-    static success(payload: any = null, message: string = 'success', code: number = 200): HttpResponse {
+    static success(payload: any = null, message: string = 'success'): HttpResponse {
         return {
             status: 'success',
-            code: code,
             message: message,
             data: payload
         };
     }
 
-    static dataNotFound(message: string = 'Data not found', code: number = 404): HttpResponse {
+    static dataNotFound(message: string = 'Data not found'): HttpResponse {
         throw new NotFoundException({
             status: 'not found',
-            code: code,
             message: message
         })
     }
 
-    static delete(message: string = 'Success delete', status: string = 'success', code: number = 200): HttpResponse {
+    static delete(message: string = 'Success delete', status: string = 'success'): HttpResponse {
         return {
             status: status,
-            code: code,
             message: message
         };
     }
