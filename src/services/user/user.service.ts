@@ -30,6 +30,22 @@ export class UserService {
                             contains: search,
                             mode: 'insensitive'
                         }
+                    },
+                    {
+                        profile: {
+                            name: {
+                                contains: search,
+                                mode: 'insensitive'
+                            },
+                            address: {
+                                contains: search,
+                                mode: 'insensitive'
+                            },
+                            phone_number: {
+                                contains: search,
+                                mode: 'insensitive'
+                            },
+                        },
                     }
                 ]
             },
@@ -184,7 +200,7 @@ export class UserService {
                     phone_number,
                 }
             })
-        
+
             return HttpResponseTraits.success({
                 user,
                 profile
@@ -208,7 +224,7 @@ export class UserService {
             if (!existingUser) {
                 HttpResponseTraits.dataNotFound();
             }
-            
+
             await this.prisma.profile.delete({
                 where: { id_user: id }
             })
