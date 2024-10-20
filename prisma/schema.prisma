@@ -46,7 +46,7 @@ model Product {
   id           String   @id @default(uuid())
   name_product String   @db.VarChar(255)
   stock        Int
-  price        Int
+  price        Decimal  @db.Decimal(10, 2)
   product_img  String   @db.VarChar(255)
   description String
   created_at   DateTime @default(now())
