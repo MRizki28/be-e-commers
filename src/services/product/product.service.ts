@@ -5,6 +5,7 @@ import { ProductDto } from 'src/dto/product.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { createWriteStream } from 'fs';
 import * as fs from 'fs';
+// import Decimal from 'decimal.js';
 
 @Injectable()
 export class ProductService {
