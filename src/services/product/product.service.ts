@@ -275,9 +275,4 @@ export class ProductService {
             }
         };
     }
-
-    async getImgUrl(filename: string): Promise<any> {
-        const path = `./public/uploads/product/${filename}`;
-        return HttpResponseTraits.success(path, 'Success get image url');
-    }
 }
