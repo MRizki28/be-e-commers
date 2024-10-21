@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from 'src/dto/product.dto';
 import { ProductService } from 'src/services/product/product.service';
@@ -37,7 +37,7 @@ export class ProductController {
     }
 
     @Get('/img/:filename')
-    async getImgUrl(@Param('filename') filename: string): Promise<any> {
-        return this.productService.getImgUrl(filename);
+    async getImgUrl(@Param('filename') filename: string, @Res() res: any): Promise<any> {
+        return this.productService.getImgUrl(filename, res);
     }
 }
