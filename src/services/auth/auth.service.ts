@@ -29,7 +29,7 @@ export class AuthService {
                 throw new UnauthorizedException('Unauthorized');
             }
     
-            const token = this.jwtService.sign({ id: user.id, email: user.email });
+            const token = this.jwtService.sign({ id: user.id, email: user.email, role: user.role });
             await this.prisma.user.update({
                 where: {
                     id: user.id,
