@@ -276,8 +276,12 @@ export class ProductService {
         };
     }
 
-    async getImgUrl(filename: string): Promise<any> {
+    async getImgUrl(filename: string, res: any): Promise<any> {
         const path = `./public/uploads/product/${filename}`;
-        return HttpResponseTraits.success(path, 'Success get image url');
+        if (fs.existsSync(path)) {
+            res.sendFile(path, { root: '.' });
+        } else {
+            HttpResponseTraits.dataNotFound();
+        }
     }
 }
