@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from 'src/dto/product.dto';
 import { ProductService } from 'src/services/product/product.service';
 
-@Controller('product')
+@Controller('api/v1/product')
 export class ProductController {
     constructor(
         private readonly productService: ProductService

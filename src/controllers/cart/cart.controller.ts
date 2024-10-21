@@ -10,7 +10,7 @@ export interface User {
     userId: string;
 }
 
-@Controller('cart')
+@Controller('api/v1/cart')
 export class CartController {
     constructor(
         private readonly cartService: CartService
