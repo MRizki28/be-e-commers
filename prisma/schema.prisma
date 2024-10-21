@@ -30,6 +30,7 @@ model User {
   updated_at   DateTime @updatedAt
   profile      Profile? @relation("UserProfile")
   carts        Cart[]   @relation("UserCart")
+  orders       Order[]  @relation("UserOrder")
 }
 
 model Profile {
@@ -64,4 +65,14 @@ model Cart {
   qty        Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model Order {
+  id            String   @id @default(uuid())
+  id_user       String
+  user          User     @relation("UserOrder", fields: [id_user], references: [id])
+  total_amount  Decimal  @db.Decimal(10, 2)
+  product_order Json[]
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 }
