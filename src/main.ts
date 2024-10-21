@@ -19,6 +19,13 @@ async function bootstrap() {
   }
   ));
 
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   app.use(bodyParser.json());
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
