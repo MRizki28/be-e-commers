@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -29,6 +29,7 @@ model User {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   profile      Profile? @relation("UserProfile")
+  carts        Cart[]   @relation("UserCart")
 }
 
 model Profile {
@@ -48,7 +49,19 @@ model Product {
   stock        Int
   price        Decimal  @db.Decimal(10, 2)
   product_img  String   @db.VarChar(255)
-  description String
+  description  String
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
+  carts        Cart[]   @relation("ProductCart")
+}
+
+model Cart {
+  id         String   @id @default(uuid())
+  id_user    String
+  user       User     @relation("UserCart", fields: [id_user], references: [id])
+  id_product String
+  product    Product  @relation("ProductCart", fields: [id_product], references: [id])
+  qty        Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
