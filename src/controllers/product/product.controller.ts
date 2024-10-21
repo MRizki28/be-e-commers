@@ -35,4 +35,9 @@ export class ProductController {
     async deleteData(@Param('id') id: string): Promise<any> {
         return this.productService.deleteData(id);
     }
+
+    @Get('/img/:filename')
+    async getImgUrl(filename: string): Promise<any> {
+        return this.productService.getImgUrl(filename);
+    }
 }
