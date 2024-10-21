@@ -15,23 +15,24 @@ export class UserController {
         return await this.userService.getAllData(req);
     }
 
+    // @UseGuards(JwtAuthGuard)
     @Post('/create')
-    async createData(@Body() userDto: UserDto) {
+    async createData(@Body() userDto: UserDto) : Promise<any> {
         return await this.userService.createData(userDto);
     }
 
     @Get('/get/:id')
-    async getDataById(@Param('id') id: string) {
+    async getDataById(@Param('id') id: string): Promise<any> {
         return await this.userService.getDataById(id);
     }
 
     @Post('/update/:id')
-    async updateData(@Param('id') id: string, @Body() userDto: UserDto) {
+    async updateData(@Param('id') id: string, @Body() userDto: UserDto): Promise<any> {
         return await this.userService.updateData(id, userDto);
     }
 
     @Delete('/delete/:id')
-    async deleteData(@Param('id') id: string) {
+    async deleteData(@Param('id') id: string): Promise<any> {
         return await this.userService.deleteData(id);
     }
 }
