@@ -2,12 +2,13 @@ import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res, UploadedFi
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductDto } from 'src/dto/product.dto';
 import { ProductService } from 'src/services/product/product.service';
+import { Response } from 'express';
 
 @Controller('api/v1/product')
 export class ProductController {
     constructor(
         private readonly productService: ProductService
-    ) {}
+    ) { }
 
     @Get('/')
     async getAllData(@Query() req): Promise<any> {
@@ -37,7 +38,8 @@ export class ProductController {
     }
 
     @Get('/img/:filename')
-    async getImgUrl(@Param('filename') filename: string, @Res() res: any): Promise<any> {
-        return this.productService.getImgUrl(filename, res);
+    async getImgUrl(@Param('filename') filename: string, @Res() res: Response): Promise<any> {
+        const imagePath = await this.productService.getImgUrl(filename);
+        return res.sendFile(imagePath);
     }
 }

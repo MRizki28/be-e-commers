@@ -5,6 +5,7 @@ import { ProductDto } from 'src/dto/product.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { createWriteStream } from 'fs';
 import * as fs from 'fs';
+import { join } from 'path';
 // import Decimal from 'decimal.js';
 
 @Injectable()
@@ -276,12 +277,12 @@ export class ProductService {
         };
     }
 
-    async getImgUrl(filename: string, res: any): Promise<any> {
-        const path = `./public/uploads/product/${filename}`;
+    async getImgUrl(filename: string): Promise<any> {
+        const path = join(__dirname, '../../../public/uploads/product/', filename);
         if (fs.existsSync(path)) {
-            res.sendFile(path, { root: '.' });
+            return path;
         } else {
-            HttpResponseTraits.dataNotFound();
+            throw new NotFoundException('Image not found');
         }
     }
 }
