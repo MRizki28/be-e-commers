@@ -36,11 +36,6 @@ export class ProductService {
                         }
                     },
                     {
-                        stock: {
-                            equals: Number(search) || 0
-                        }
-                    },
-                    {
                         price: {
                             equals: Number(search) || 0
                         }
@@ -64,11 +59,6 @@ export class ProductService {
                         name_product: {
                             contains: search,
                             mode: 'insensitive'
-                        }
-                    },
-                    {
-                        stock: {
-                            equals: Number(search) || 0
                         }
                     },
                     {
@@ -109,7 +99,7 @@ export class ProductService {
 
     async createData(productDto: ProductDto, productImg: Express.Multer.File): Promise<any> {
         try {
-            const { name_product, stock, price, description } = productDto;
+            const { name_product, price, description } = productDto;
 
             if (!productImg || !['image/jpeg', 'image/png'].includes(productImg.mimetype)) {
                 throw new UnprocessableEntityException({
@@ -139,7 +129,6 @@ export class ProductService {
             const data = await this.prisma.product.create({
                 data: {
                     name_product,
-                    stock: Number(stock),
                     price: Number(price),
                     description,
                     product_img: filename
@@ -178,7 +167,7 @@ export class ProductService {
 
     async updateData(id: string, productDto: ProductDto, productImg: Express.Multer.File): Promise<any> {
         try {
-            const { name_product, stock, price, description } = productDto;
+            const { name_product, price, description } = productDto;
             if (!productImg || !['image/jpeg', 'image/png'].includes(productImg.mimetype)) {
                 throw new UnprocessableEntityException({
                     status: 'not validate',
@@ -225,7 +214,6 @@ export class ProductService {
                 },
                 data: {
                     name_product,
-                    stock: Number(stock),
                     price: Number(price),
                     description,
                     product_img: filename

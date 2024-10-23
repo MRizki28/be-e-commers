@@ -7,8 +7,6 @@ export class ProductDto {
     @IsNotEmpty()
     name_product: string;
     @IsNotEmpty()
-    stock: number;
-    @IsNotEmpty()
     @IsDecimal({decimal_digits: '2'})
     price: number;
     @IsNotEmpty()
