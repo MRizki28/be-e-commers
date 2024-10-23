@@ -44,6 +44,7 @@ export class OrderService {
                         qty: item.qty,
                         price: item.product.price,
                         name_product: item.product.name_product,
+                        product_img: item.product.product_img,
                         created_at: item.created_at
                     }))
                 }
