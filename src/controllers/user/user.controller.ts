@@ -26,7 +26,7 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/get/:id')
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.USER)
     async getDataById(@Param('id') id: string): Promise<any> {
         return await this.userService.getDataById(id);
     }
