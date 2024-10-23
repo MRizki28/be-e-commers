@@ -42,6 +42,8 @@ export class OrderService {
                     id_product: item.id_product,
                     qty: item.qty,
                     price: item.product.price,
+                    name_product: item.product.name_product,
+                    created_at: item.created_at
                 }))
             });
 
@@ -77,7 +79,6 @@ export class OrderService {
 
     async getAllOrder(req: Request & { user: User }): Promise<any> {
         try {
-            // Ambil semua order berdasarkan id_user
             const data = await this.prisma.order.findMany({
                 where: {
                     id_user: req.user.id
@@ -85,37 +86,21 @@ export class OrderService {
                 select: {
                     product_order: true,
                 }
-            });
+            })
 
             if (data.length === 0) {
-                return HttpResponseTraits.dataNotFound();
+                return HttpResponseTraits.dataNotFound()
             }
+            
 
-            const orderData = data.map(item => item.product_order as { id_product: string, qty: number }[]).flat();
+            const orderData = data.map(item => item.product_order).flat();
 
-            const productDetails = await this.prisma.product.findMany({
-                where: {
-                    id: {
-                        in: orderData.map(item => item.id_product)
-                    }
-                }
-            });
-
-            const detailedOrders = orderData.map(order => {
-                const productDetail = productDetails.find(product => product.id === order.id_product);
-                return {
-                    ...order,
-                    product: productDetail
-                };
-            });
-
-            return HttpResponseTraits.success(detailedOrders, 'Success get all order');
+            return HttpResponseTraits.success(orderData, 'Success get all order');
         } catch (error) {
             console.log(error);
             if (error instanceof NotFoundException) {
                 throw error;
             }
-        }
+        };
     }
-
 }
