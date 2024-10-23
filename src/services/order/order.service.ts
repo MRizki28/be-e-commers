@@ -90,9 +90,7 @@ export class OrderService {
                 return HttpResponseTraits.dataNotFound()
             }
 
-            const orderData = data.map(item => ({
-                product_order: item.product_order
-            }))
+            const orderData = data.map(item => item.product_order).flat();
 
             return HttpResponseTraits.success(orderData, 'Success get all order');
         } catch (error) {
