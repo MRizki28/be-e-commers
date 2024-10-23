@@ -35,19 +35,6 @@ export class OrderService {
                 totalAmount += item.qty * price;
             })
 
-            console.log('Creating order with data:', {
-                id_user: req.user.id,
-                total_amount: totalAmount,
-                product_order: cartItem.map(item => ({
-                    id_product: item.id_product,
-                    qty: item.qty,
-                    price: item.product.price,
-                    name_product: item.product.name_product,
-                    created_at: item.created_at
-                }))
-            });
-
-
             const order = await this.prisma.order.create({
                 data: {
                     id_user: req.user.id,
@@ -56,6 +43,8 @@ export class OrderService {
                         id_product: item.id_product,
                         qty: item.qty,
                         price: item.product.price,
+                        name_product: item.product.name_product,
+                        created_at: item.created_at
                     }))
                 }
             })
